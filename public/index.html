@@ -1,0 +1,77 @@
+<!-- public/index.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>간단한 게시판</title>
+</head>
+<body>
+    <h1>간단한 게시판</h1>
+
+    <form id="postForm">
+        <label for="title">제목:</label><br>
+        <input type="text" id="title" name="title" required><br>
+        <label for="detail">내용:</label><br>
+        <textarea id="detail" name="detail" rows="4" cols="50" required></textarea><br><br>
+        <button type="submit">글쓰기</button>
+    </form>
+
+    <h2>게시글 목록</h2>
+    <ul id="postList"></ul>
+
+    <script>
+        async function fetchPosts() {
+            try {
+                const response = await fetch('/api/posts');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch posts.');
+                }
+                const posts = await response.json();
+                const postListElement = document.getElementById('postList');
+                postListElement.innerHTML = '';
+                posts.forEach(post => {
+                    const li = document.createElement('li');
+                    li.textContent = `${post.title} - ${post.detail}`;
+                    postListElement.appendChild(li);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('게시글을 불러오는 중에 오류가 발생했습니다.');
+            }
+        }
+
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit post.');
+                }
+
+                alert('글이 성공적으로 저장되었습니다.');
+                form.reset();
+                fetchPosts();
+            } catch (error) {
+                console.error(error);
+                alert('글을 저장하는 중에 오류가 발생했습니다.');
+            }
+        }
+
+        document.getElementById('postForm').addEventListener('submit', submitForm);
+        fetchPosts();
+    </script>
+</body>
+</html>
