@@ -15,8 +15,11 @@
         <input type="text" id="title" name="title" required><br>
         <label for="detail">내용:</label><br>
         <textarea id="detail" name="detail" rows="4" cols="50" required></textarea><br><br>
+        <label for="content">추가 내용:</label><br>
+        <textarea id="content" name="content" rows="4" cols="50" required></textarea><br><br>
         <button type="submit">글쓰기</button>
     </form>
+    
 
     <h2>게시글 목록</h2>
     <ul id="postList"></ul>
@@ -43,32 +46,35 @@
         }
 
         async function submitForm(event) {
-            event.preventDefault();
+    event.preventDefault();
 
-            const form = event.target;
-            const formData = new FormData(form);
+    const form = event.target;
+    const formData = new FormData(form);
 
-            try {
-                const response = await fetch('/api/posts', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData))
-                });
+    try {
+        const response = await fetch('/api/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Object.fromEntries(formData))
+        });
 
-                if (!response.ok) {
-                    throw new Error('Failed to submit post.');
-                }
-
-                alert('글이 성공적으로 저장되었습니다.');
-                form.reset();
-                fetchPosts();
-            } catch (error) {
-                console.error(error);
-                alert('글을 저장하는 중에 오류가 발생했습니다.');
-            }
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            throw new Error(`Failed to submit post: ${errorResponse.error}`);
         }
+
+        const result = await response.json();
+        alert('글이 성공적으로 저장되었습니다.');
+        form.reset();
+        fetchPosts();
+    } catch (error) {
+        console.error(error);
+        alert(`글을 저장하는 중에 오류가 발생했습니다: ${error.message}`);
+    }
+}
+
 
         document.getElementById('postForm').addEventListener('submit', submitForm);
         fetchPosts();
