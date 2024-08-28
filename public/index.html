@@ -36,7 +36,9 @@
                 postListElement.innerHTML = '';
                 posts.forEach(post => {
                     const li = document.createElement('li');
-                    li.textContent = `${post.title} - ${post.detail} - ${post.content}`;
+                    li.textContent = `제목: ${post.title} -
+                    내용: ${post.detail} - 
+                    추가내용: ${post.content}`;
                     postListElement.appendChild(li);
                 });
             } catch (error) {
