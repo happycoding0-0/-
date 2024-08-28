@@ -36,7 +36,7 @@
                 postListElement.innerHTML = '';
                 posts.forEach(post => {
                     const li = document.createElement('li');
-                    li.textContent = `${post.title} - ${post.detail}`;
+                    li.textContent = `${post.title} - ${post.detail} - ${post.content}`;
                     postListElement.appendChild(li);
                 });
             } catch (error) {
