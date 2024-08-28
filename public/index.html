@@ -36,8 +36,8 @@
                 postListElement.innerHTML = '';
                 posts.forEach(post => {
                     const li = document.createElement('li');
-                    li.textContent = `제목: ${post.title} -
-                    내용: ${post.detail} - 
+                    li.textContent = `제목: ${post.title} -<br>
+                    내용: ${post.detail} - <br>
                     추가내용: ${post.content}`;
                     postListElement.appendChild(li);
                 });
